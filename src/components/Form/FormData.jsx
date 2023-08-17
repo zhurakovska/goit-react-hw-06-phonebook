@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { addContact } from '../redux/contactsSlice';
+import { addContact } from '../../redux/contactsSlice';
 
 const INITIAL_STATE = {
   name: '',

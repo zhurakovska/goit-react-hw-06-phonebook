@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 //імпорт функції для створення слайса
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -18,7 +17,7 @@ const contactsSlice = createSlice({
         // Повертаємо новий доповнений payload
         return {
           // Розширюємо пейлоад будь-якими данними
-          payload: { id: nanoid(), ...contact },
+          payload: { ...contact },
         };
       },
       reducer: (state, action) => {
