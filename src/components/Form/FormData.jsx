@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-
 import { Form, Label, Input, Button } from './Form.styled';
+import { nanoid } from 'nanoid';
+
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { addContact } from '../redux/contactsSlice';
 
 const INITIAL_STATE = {
   name: '',
   number: '',
 };
 
-export const FormData = ({ onAddContact }) => {
+export const FormData = () => {
   const [formData, setFormData] = useState(INITIAL_STATE);
   const { name, number } = formData;
+  const contacts = useSelector(state => state.contactList.contacts);
+  const dispatch = useDispatch();
 
   const handleSubmit = e => {
     e.preventDefault();
-    onAddContact({
-      // тут мы получаем наш contact деструтуризируем
-      // тут мы передаем значения name и number(которое записали в инпуте) при сабмите мы прокидываем это в contact
-      name,
-      number,
-    });
+    // Перевіряє, чи існує контакт з таким самим ім'ям у списку контактів.
+    const contactExists = contacts.some(
+      existingName => existingName.name.toLowerCase() === name.toLowerCase()
+    );
+    if (contactExists) {
+      alert(`${name} is already exist`);
+      return;
+    }
 
+    dispatch(addContact({ name, number, id: nanoid() }));
     setFormData(INITIAL_STATE);
-  };
-
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -35,7 +38,7 @@ export const FormData = ({ onAddContact }) => {
         <Label>
           Name:
           <Input
-            onChange={handleInputChange}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             value={name}
             type="text"
             name="name"
@@ -47,7 +50,7 @@ export const FormData = ({ onAddContact }) => {
         <Label>
           Number:
           <Input
-            onChange={handleInputChange}
+            onChange={e => setFormData({ ...formData, number: e.target.value })}
             value={number}
             type="tel"
             name="number"
@@ -60,8 +63,4 @@ export const FormData = ({ onAddContact }) => {
       </Form>
     </>
   );
-};
-
-FormData.propTypes = {
-  onAddContact: PropTypes.func.isRequired,
 };
